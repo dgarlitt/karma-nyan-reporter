@@ -1,0 +1,39 @@
+{
+  "name": "karma-nyan-reporter",
+  "description": "Karma reporter with Nyan Cat style logging.",
+  "version": "0.0.1",
+  "maintainers": [
+    {
+      "name": "Daniel Arlitt",
+      "email": "dgarlitt@yahoo.com"
+    }
+  ],
+  "keywords": [
+    "karma-plugin",
+    "karma-reporter",
+    "nyan",
+    "cat"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dgarlitt/karma-nyan-reporter.git"
+  },
+  "author": "Daniel Arlitt <dgarlitt@yahoo.com>",
+  "license": "The MIT License (MIT)",
+  "bugs": {
+    "url": "https://github.com/dgarlitt/karma-nyan-reporter/issues"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "karma": ">=0.9"
+  },
+  "dependencies": {
+    "cli-color": "^0.3.2"
+  },
+  "devDependencies": {
+    "prettyjson": "^1.0.0"
+  }
+}
