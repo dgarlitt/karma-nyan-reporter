@@ -2,12 +2,8 @@
 var tty = require('tty');
 var clc = require('cli-color');
 
-/**
- * Initialize a new `Dot` matrix test reporter.
- *
- * @param {Runner} runner
- * @api public
- */
+// Emulate the Mocha base class a little bit
+// just to get things going
 
  var BaseClass = function() {
  	var self = this;
@@ -53,12 +49,6 @@ var clc = require('cli-color');
  var Base = new BaseClass();
 
 function NyanCat(baseReporterDecorator, formatError, config) {
-  // baseReporterDecorator(this);
-
-  // chalk.enabled = true;
-  // if (config.colors == false) {
-  // 	chalk.enabled = false;
-  // }
 
   var width = Base.window.width * .75 | 0;
   var self = this;
