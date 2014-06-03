@@ -1,7 +1,6 @@
 'use strict';
 var tty = require('tty');
 var clc = require('cli-color');
-var prettyjson = require('prettyjson');
 
 /**
  * Initialize a new `Dot` matrix test reporter.

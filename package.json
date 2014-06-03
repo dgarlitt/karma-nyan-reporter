@@ -1,7 +1,7 @@
 {
   "name": "karma-nyan-reporter",
   "description": "Karma reporter with Nyan Cat style logging.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "maintainers": [
     {
       "name": "Daniel Arlitt",
@@ -32,8 +32,5 @@
   },
   "dependencies": {
     "cli-color": "^0.3.2"
-  },
-  "devDependencies": {
-    "prettyjson": "^1.0.0"
   }
 }
