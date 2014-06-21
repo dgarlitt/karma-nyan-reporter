@@ -62,7 +62,6 @@ function NyanCat(baseReporterDecorator, formatError, config) {
   self.trajectoryWidthMax = (width - self.nyanCatWidth)
   self.scoreboardWidth = 5;
   self.tick = 0;
-  self.errors = [];
   self.colors = {
 	    'gray': 90
 	  , 'fail': 31
@@ -90,6 +89,7 @@ function NyanCat(baseReporterDecorator, formatError, config) {
 
     self._browsers = [];
     self.allResults = {};
+    self.errors = [];
     self.totalTime = 0;
     self.numberOfSlowTests = 0;
     self.numberOfSkippedTests = 0;
