@@ -6,43 +6,43 @@ var clc = require('cli-color');
 // just to get things going
 
  var BaseClass = function() {
- 	var self = this;
+  var self = this;
 
- 	this.isatty = tty.isatty(1) && tty.isatty(2);
+  this.isatty = tty.isatty(1) && tty.isatty(2);
 
- 	this.window = {
- 		width : self.isatty ? process.stdout.getWindowSize
-								      ? process.stdout.getWindowSize(1)[0]
-								      : tty.getWindowSize()[1]
-   									: 75
+  this.window = {
+    width : self.isatty ? process.stdout.getWindowSize
+                      ? process.stdout.getWindowSize(1)[0]
+                      : tty.getWindowSize()[1]
+                    : 75
   };
 
-	this.cursor = {
-		hide: function(){
-	    self.isatty && process.stdout.write('\u001b[?25l');
-	  },
+  this.cursor = {
+    hide: function(){
+      self.isatty && process.stdout.write('\u001b[?25l');
+    },
 
-	  show: function(){
-	    self.isatty && process.stdout.write('\u001b[?25h');
-	  },
+    show: function(){
+      self.isatty && process.stdout.write('\u001b[?25h');
+    },
 
-	  deleteLine: function(){
-	    self.isatty && process.stdout.write('\u001b[2K');
-	  },
+    deleteLine: function(){
+      self.isatty && process.stdout.write('\u001b[2K');
+    },
 
-	  beginningOfLine: function(){
-	    self.isatty && process.stdout.write('\u001b[0G');
-	  },
+    beginningOfLine: function(){
+      self.isatty && process.stdout.write('\u001b[0G');
+    },
 
-	  CR: function(){
-	    if (self.isatty) {
-	      self.cursor.deleteLine();
-	      self.cursor.beginningOfLine();
-	    } else {
-	      process.stdout.write('\n');
-	    }
-	  }
-	};
+    CR: function(){
+      if (self.isatty) {
+        self.cursor.deleteLine();
+        self.cursor.beginningOfLine();
+      } else {
+        process.stdout.write('\n');
+      }
+    }
+  };
 
  };
 
@@ -63,29 +63,29 @@ function NyanCat(baseReporterDecorator, formatError, config) {
   self.scoreboardWidth = 5;
   self.tick = 0;
   self.colors = {
-	    'gray': 90
-	  , 'fail': 31
-	  , 'bright_pass': 92
-	  , 'bright_fail': 91
-	  , 'bright_yellow': 93
-	  , 'skip': 36
-	  , 'suite': 0
-	  , 'error title': 0
-	  , 'error message': 31
-	  , 'error stack': 90
-	  , 'checkmark': 32
-	  , 'fast': 90
-	  , 'medium': 33
-	  , 'slow': 31
-	  , 'pass': 32
-	  , 'light': 90
-	  , 'diff gutter': 90
-	  , 'diff added': 42
-	  , 'diff removed': 41
-	};
+      'gray': 90
+    , 'fail': 31
+    , 'bright_pass': 92
+    , 'bright_fail': 91
+    , 'bright_yellow': 93
+    , 'skip': 36
+    , 'suite': 0
+    , 'error title': 0
+    , 'error message': 31
+    , 'error stack': 90
+    , 'checkmark': 32
+    , 'fast': 90
+    , 'medium': 33
+    , 'slow': 31
+    , 'pass': 32
+    , 'light': 90
+    , 'diff gutter': 90
+    , 'diff added': 42
+    , 'diff removed': 41
+  };
 
   self.onRunStart = function (browsers) {
-  	Base.cursor.hide();
+    Base.cursor.hide();
 
     self._browsers = [];
     self.allResults = {};
@@ -104,55 +104,57 @@ function NyanCat(baseReporterDecorator, formatError, config) {
   };
 
   self.onSpecComplete = function(browser, result) {
-  	self.stats = browser.lastResult;
+    self.stats = browser.lastResult;
 
-  	if(!result.success && !result.skipped) {
-  		var searchArray = self.errors;
+    if(!result.success && !result.skipped) {
+      var searchArray = self.errors;
 
-			result.suite.forEach(function(suiteName, i, arr) {
-		    var suite = findByName(searchArray, suiteName, Suite);
+      result.suite.forEach(function(suiteName, i, arr) {
+        var suite = findByName(searchArray, suiteName, Suite);
 
-		    // if we reached the last suite
-		    // set the test information
-		    if (i == arr.length - 1 ) {
-		      suite.tests = (!suite.tests) ? [] : suite.tests;
-		      var test = findByName(suite.tests, result.description, Test);
-		      var brwsr = findByName(test.browsers, browser.name, Browser);
-		      brwsr.errors = result.log[0].split('\n');
+        // if we reached the last suite
+        // set the test information
+        if (i == arr.length - 1 ) {
+          suite.tests = (!suite.tests) ? [] : suite.tests;
+          var test = findByName(suite.tests, result.description, Test);
+          var brwsr = findByName(test.browsers, browser.name, Browser);
+          brwsr.errors = result.log[0].split('\n');
 
-		    // Otherwise, keep looping through sub-suites
-		    } else {
-		      suite.suites = (!suite.suites) ? [] : suite.suites;
-		      searchArray = suite.suites;
-		    }
+        // Otherwise, keep looping through sub-suites
+        } else {
+          suite.suites = (!suite.suites) ? [] : suite.suites;
+          searchArray = suite.suites;
+        }
 
-			});
+      });
 
-	  }
+    }
 
-	  self.draw();
+    self.draw();
   };
 
   self.onRunComplete = function(browsers, results) {
-  	write("\n");
-  	write("\n");
-  	write("\n");
-  	write("\n");
-  	write("\n");
+    write("\n");
+    write("\n");
+    write("\n");
+    write("\n");
+    write("\n");
 
-    printStats(self.stats);
+    Base.cursor.show();
 
-  	if (self.errors.length) {
-	  	printErrors(self.errors);
-  	}
+    if (self.stats) {
+      printStats(self.stats);
+    }
 
-  	Base.cursor.show();
+    if (self.errors.length) {
+      printErrors(self.errors);
+    }
   };
 
   function Browser(name) {
-		this.name = name;
-		this.errors = [];
-	}
+    this.name = name;
+    this.errors = [];
+  }
 
   function Test(name) {
     this.name = name;
@@ -206,69 +208,69 @@ function NyanCat(baseReporterDecorator, formatError, config) {
 
 
   function printErrors(errors) {
-	  var indentation = 0;
-	  var inc = 3; // increment amount
-	  var counter = 0; // a counter
+    var indentation = 0;
+    var inc = 3; // increment amount
+    var counter = 0; // a counter
 
-	  printFailures(errors, indentation);
+    printFailures(errors, indentation);
 
-	  function printFailures(arr, indentation) {
-			indentation += inc;
-			arr.forEach(function(el, i, arr) {
-				write(clc.right(indentation));
-				if ( el instanceof Suite) {
-					var str = el.name;
+    function printFailures(arr, indentation) {
+      indentation += inc;
+      arr.forEach(function(el, i, arr) {
+        write(clc.right(indentation));
+        if ( el instanceof Suite) {
+          var str = el.name;
 
-					if ( arr === errors ) {
-						write( clc.white.underline(++counter + ') ' + str) );
+          if ( arr === errors ) {
+            write( clc.white.underline(++counter + ') ' + str) );
 
-					} else {
-						write( clc.white(str) );
-					}
+          } else {
+            write( clc.white(str) );
+          }
 
-				} else if ( el instanceof Test ) {
-					write( clc.red(el.name) );
+        } else if ( el instanceof Test ) {
+          write( clc.red(el.name) );
 
-				} else if ( el instanceof Browser ) {
-					write( clc.yellow(el.name) );
-					printErrors(el.errors, indentation);
+        } else if ( el instanceof Browser ) {
+          write( clc.yellow(el.name) );
+          printErrors(el.errors, indentation);
 
-				}
-				write('\n');
-				if (el.browsers) {
-					printFailures(el.browsers, indentation);
-					write('\n');
-				}
-				if (el.tests) {
-					printFailures(el.tests, indentation);
-				}
-				if (el.suites) {
-					printFailures(el.suites, indentation);
-				}
-			});
-		}
+        }
+        write('\n');
+        if (el.browsers) {
+          printFailures(el.browsers, indentation);
+          write('\n');
+        }
+        if (el.tests) {
+          printFailures(el.tests, indentation);
+        }
+        if (el.suites) {
+          printFailures(el.suites, indentation);
+        }
+      });
+    }
 
-		function printErrors(errors, indentation) {
-			var first = true;
-			indentation += inc;
-			errors.forEach(function(error, i, arr) {
-				write('\n');
-				write( clc.right(indentation) );
-				if (first) {
-					write( clc.redBright(error) );
-				} else {
-					write( clc.blackBright(error) );
-				}
-				first = false;
-			});
-		}
+    function printErrors(errors, indentation) {
+      var first = true;
+      indentation += inc;
+      errors.forEach(function(error, i, arr) {
+        write('\n');
+        write( clc.right(indentation) );
+        if (first) {
+          write( clc.redBright(error) );
+        } else {
+          write( clc.blackBright(error) );
+        }
+        first = false;
+      });
+    }
 
-	} // end print fn
+  } // end print fn
 
   this.color = function(type, str) {
-	  if (config.colors === false) return str;
-	  return '\u001b[' + self.colors[type] + 'm' + str + '\u001b[0m';
-	};
+    if (config.colors === false) return str;
+    return '\u001b[' + self.colors[type] + 'm' + str + '\u001b[0m';
+  };
 
 }
 
@@ -472,5 +474,5 @@ function write(string) {
 NyanCat.$inject = ['baseReporterDecorator', 'formatError', 'config'];
 
 module.exports = {
-	'reporter:nyan': ['type', NyanCat]
+  'reporter:nyan': ['type', NyanCat]
 };
