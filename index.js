@@ -54,7 +54,6 @@ function NyanCat(baseReporterDecorator, formatError, config) {
   var self = this;
 
   self.stats;
-  self.listSkippedTests = false;
   self.rainbowColors = self.generateColors();
   self.colorIndex = 0;
   self.numberOfLines = 4;
@@ -92,7 +91,6 @@ function NyanCat(baseReporterDecorator, formatError, config) {
     self.browserErrors = [];
     self.allResults = {};
     self.errors = [];
-    self.skips = [];
     self.totalTime = 0;
     self.numberOfSlowTests = 0;
     self.numberOfBrowsers = (browsers || []).length;
@@ -108,12 +106,8 @@ function NyanCat(baseReporterDecorator, formatError, config) {
   self.onSpecComplete = function(browser, result) {
     self.stats = browser.lastResult;
 
-    if (!result.success) {
+    if (!result.success && !result.skipped) {
         var searchArray = self.errors;
-
-        if (result.skipped && self.listSkippedTests) {
-          searchArray = self.skips;
-        }
 
         result.suite.forEach(function(suiteName, i, arr) {
           var suite = findByName(searchArray, suiteName, Suite);
@@ -125,9 +119,7 @@ function NyanCat(baseReporterDecorator, formatError, config) {
             var test = findByName(suite.tests, result.description, Test);
             var brwsr = findByName(test.browsers, browser.name, Browser);
 
-            if (!result.skipped) {
-              brwsr.errors = result.log[0].split('\n');
-            }
+            brwsr.errors = result.log[0].split('\n');
 
           // Otherwise, keep looping through sub-suites
           } else {
@@ -183,11 +175,6 @@ function NyanCat(baseReporterDecorator, formatError, config) {
       if (self.errors.length) {
         write(clc.red('Failed Tests:\n'));
         printSuitesArray(self.errors, 'red');
-      }
-
-      if (self.skips.length) {
-        write(clc.cyan('Skipped Tests:\n'));
-        printSuitesArray(self.skips, 'cyan');
       }
     }
   };
