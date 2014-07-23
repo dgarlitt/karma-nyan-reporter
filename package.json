@@ -1,7 +1,7 @@
 {
   "name": "karma-nyan-reporter",
   "description": "Karma reporter with Nyan Cat style logging.",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "maintainers": [
     {
       "name": "Daniel Arlitt",
