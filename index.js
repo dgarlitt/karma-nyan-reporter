@@ -60,6 +60,7 @@
     self.rainbowColors = self.generateColors();
     self.colorIndex = 0;
     self.numberOfLines = 4;
+    self.browser_logs = {};
     self.trajectories = [[], [], [], []];
     self.nyanCatWidth = 11;
     self.trajectoryWidthMax = (width - self.nyanCatWidth);
@@ -91,6 +92,7 @@
       Base.cursor.hide();
 
       self._browsers = [];
+      self.browser_logs = {};
       self.browserErrors = [];
       self.allResults = {};
       self.errors = [];
@@ -99,6 +101,17 @@
       self.numberOfBrowsers = (browsers || []).length;
 
       write('\n');
+    };
+
+    self.onBrowserLog = function(browser, log, type) {
+      if (! self.browser_logs[browser.id]) {
+        self.browser_logs[browser.id] = {
+          name: browser.name,
+          log_messages: []
+        };
+      }
+
+      self.browser_logs[browser.id].log_messages.push(log);
     };
 
     self.onBrowserStart = function (browser) {
@@ -178,6 +191,8 @@
         if (self.stats) {
           printStats(self.stats);
         }
+
+        printBrowserLogs();
       }
     };
 
@@ -220,6 +235,19 @@
 
       // return the object
       return it;
+    }
+
+    function printBrowserLogs() {
+      var printMsg = function(msg) {
+        write( "    ");
+        write( clc.cyan(msg) );
+        write("\n");
+      };
+
+      for (var browser in self.browser_logs) {
+        write( "LOG MESSAGES FOR: " + self.browser_logs[browser].name + " INSTANCE #:" + browser + "\n" );
+        self.browser_logs[browser].log_messages.forEach(printMsg);
+      }
     }
 
     function printStats(stats) {
