@@ -16,4 +16,4 @@ Since this follows Karma's plugin naming convention, that's all there is to it!
 
 Now, run your tests and enjoy:
 
-    karma start frontend-test/karma.conf.js --reporters nyan
+    karma start path/to/karma.conf.js --reporters nyan
