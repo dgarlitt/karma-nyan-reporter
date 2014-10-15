@@ -3,7 +3,7 @@ karma-nyan-reporter
 
 Nyan Cat style reporter cobbled together from the [Mocha](http://visionmedia.github.io/mocha/) version
 
-![alt text](https://googledrive.com/host/0BxhEGuYWG8zASkpXZl9JSG9Lbm8/karma-nyan-reporter.gif "Nyan Cat Reporter for Karma")
+![alt text](https://googledrive.com/host/0BxhEGuYWG8zAWHlxTmtNbWtibEE/karma-nyan-reporter.gif "Nyan Cat Reporter for Karma")
 
 Installation
 ========
