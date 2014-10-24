@@ -270,11 +270,26 @@
     function printSuitesArray(errors, color) {
       var indentation = 0;
       var inc = 3; // increment amount
-      var counter = 0; // a counter
+      var counter = 0;
 
-      printSuites(errors, indentation);
+      // printer for individual errors
+      var printErrors = function(errors, indentation) {
+        var first = true;
+        indentation += inc;
+        errors.forEach(function(error, i, arr) {
+          write('\n');
+          write( clc.right(indentation) );
+          if (first) {
+            write( clc[color + 'Bright'](++counter + ') ' + error) );
+          } else {
+            write( clc.blackBright(error.replace(/(\?.+:)/, ':')) );
+          }
+          first = false;
+        });
+      };
 
-      function printSuites(arr, indentation) {
+      // printer for suites
+      var printSuites = function(arr, indentation) {
         indentation += inc;
         arr.forEach(function(el, i, arr) {
           write(clc.right(indentation));
@@ -282,7 +297,7 @@
             var str = el.name;
 
             if ( arr === errors ) {
-              write( clc.white.underline(++counter + ') ' + str) );
+              write( clc.white.underline(str) );
 
             } else {
               write( clc.white(str) );
@@ -308,22 +323,9 @@
             printSuites(el.suites, indentation);
           }
         });
-      }
+      };
 
-      function printErrors(errors, indentation) {
-        var first = true;
-        indentation += inc;
-        errors.forEach(function(error, i, arr) {
-          write('\n');
-          write( clc.right(indentation) );
-          if (first) {
-            write( clc[color + 'Bright'](error) );
-          } else {
-            write( clc.blackBright(error) );
-          }
-          first = false;
-        });
-      }
+      printSuites(errors, indentation);
 
     } // end print fn
 
