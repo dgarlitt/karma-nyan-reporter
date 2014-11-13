@@ -22,10 +22,10 @@ Error and Logging Output
 =========
 
 Here is a screenshot of the error and logging output. The errors are displayed heirarchically based on the test suite and nesting level. ```console.log()``` messages are output at the bottom (in blue) below the test summary and grouped by browser.
-    
+
 ![alt text](https://googledrive.com/host/0BxhEGuYWG8zAWHlxTmtNbWtibEE/karma-nyan-reporter-errors.png "Nyan Cat Reporter Error Output")
-    
+
 
 In this release
 -----------
- - Changed numbering scheme on error listings
+ - Fix error: Cannot call method 'split' of null
