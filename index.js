@@ -135,7 +135,10 @@
               var test = findByName(suite.tests, result.description, Test);
               var brwsr = findByName(test.browsers, browser.name, Browser);
 
-              brwsr.errors = result.log[0].split('\n');
+
+              if(result.log[0] !== null){
+                brwsr.errors = result.log[0].split('\n');
+              }
 
             // Otherwise, keep looping through sub-suites
             } else {
