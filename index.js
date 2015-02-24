@@ -3,6 +3,11 @@
   'use strict';
   var tty = require('tty');
   var clc = require('cli-color');
+  var defaultOptions = function(){
+    return {
+      suppressStackTrace: false
+    };
+  };
 
   // Emulate the Mocha base class a little bit
   // just to get things going
@@ -52,6 +57,15 @@
    var Base = new BaseClass();
 
   function NyanCat(baseReporterDecorator, formatError, config) {
+    var options = defaultOptions();
+    if ( config && config.nyanReporter ) {
+      // merge defaults
+      Object.keys( options ).forEach(function(optionName){
+        if ( config.nyanReporter.hasOwnProperty(optionName) ) {
+          options[optionName] = config.nyanReporter[optionName];
+        }
+      });
+    }
 
     var width = Base.window.width * 0.75 | 0;
     var self = this;
@@ -186,7 +200,7 @@
 
         Base.cursor.show();
 
-        if (self.errors.length) {
+        if (!options.suppressStackTrace && self.errors.length) {
           write(clc.red('Failed Tests:\n'));
           printSuitesArray(self.errors, 'red');
         }
