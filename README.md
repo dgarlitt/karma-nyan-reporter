@@ -25,7 +25,28 @@ Here is a screenshot of the error and logging output. The errors are displayed h
 
 ![alt text](https://googledrive.com/host/0BxhEGuYWG8zAWHlxTmtNbWtibEE/karma-nyan-reporter-errors.png "Nyan Cat Reporter Error Output")
 
+Options
+=========
+
+If you want to supress the stack trace at the end of the test run you can use the suppressErrorReport option.
+
+```js
+// karma.conf.js
+module.exports = function(config) {
+  config.set({
+    // normal config stuffs
+
+    reporters: ['nyan'],
+
+    // reporter options
+    nyanReporter: {
+      suppressErrorReport: true
+    }
+  });
+};
+```
 
 In this release
 -----------
- - Fix error: Cannot call method 'split' of null
+ - Added ability to pass an option in your config to suppress the error report (see above)
+    - special thanks to Ryan Bogle for this feature
