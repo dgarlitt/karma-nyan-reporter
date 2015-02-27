@@ -28,7 +28,7 @@ Here is a screenshot of the error and logging output. The errors are displayed h
 Options
 =========
 
-If you want to supress the stack trace at the end of the test run you can use the suppressStackTrace option.
+If you want to supress the stack trace at the end of the test run you can use the suppressErrorReport option.
 
 ```js
 // karma.conf.js
@@ -40,7 +40,7 @@ module.exports = function(config) {
 
     // reporter options
     nyanReporter: {
-      suppressStackTrace: true
+      suppressErrorReport: true
     }
   });
 };
@@ -48,4 +48,5 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Fix error: Cannot call method 'split' of null
+ - Added ability to pass an option in your config to suppress the error report (see above)
+    - special thanks to Ryan Bogle for this feature

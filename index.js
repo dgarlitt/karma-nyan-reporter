@@ -3,9 +3,9 @@
   'use strict';
   var tty = require('tty');
   var clc = require('cli-color');
-  var defaultOptions = function(){
+  var defaultOptions = function() {
     return {
-      suppressStackTrace: false
+      suppressErrorReport: false
     };
   };
 
@@ -136,7 +136,7 @@
     self.onSpecComplete = function(browser, result) {
       self.stats = browser.lastResult;
 
-      if (!result.success && !result.skipped) {
+      if (!options.suppressErrorReport && !result.success && !result.skipped) {
           var searchArray = self.errors;
 
           result.suite.forEach(function(suiteName, i, arr) {
@@ -149,19 +149,17 @@
               var test = findByName(suite.tests, result.description, Test);
               var brwsr = findByName(test.browsers, browser.name, Browser);
 
-
               if(result.log[0] !== null){
                 brwsr.errors = result.log[0].split('\n');
               }
 
-            // Otherwise, keep looping through sub-suites
+            // otherwise, keep looping through sub-suites
             } else {
               suite.suites = (!suite.suites) ? [] : suite.suites;
               searchArray = suite.suites;
             }
 
           });
-        // }
 
       }
 
@@ -200,7 +198,7 @@
 
         Base.cursor.show();
 
-        if (!options.suppressStackTrace && self.errors.length) {
+        if (!options.suppressErrorReport && self.errors.length) {
           write(clc.red('Failed Tests:\n'));
           printSuitesArray(self.errors, 'red');
         }
