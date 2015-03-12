@@ -29,6 +29,12 @@
         }
       });
     }
+
+    self.adapterMessages = [];
+
+    self.adapters = [function(msg) {
+      adapterMessages.push(msg);
+    }];
   }
 
 
@@ -115,17 +121,6 @@
   };
 
   /**
-   * onBrowserStart - karma api method
-   *
-   * called when each browser is launched
-   */
-
-  NyanCat.prototype.onBrowserStart = function (browser) {
-    this._browsers.push(browser);
-    this.numberOfBrowsers = this._browsers.length;
-  };
-
-  /**
    * onSpecComplete - karma api method
    *
    * called when each test finishes
@@ -178,6 +173,17 @@
       printers.printTestFailures(this, this.options.suppressErrorReport);
     }
     Shell.cursor.show();
+  };
+
+  /**
+   * onBrowserStart - karma api method
+   *
+   * called when each browser is launched
+   */
+
+  NyanCat.prototype.onBrowserStart = function (browser) {
+    this._browsers.push(browser);
+    this.numberOfBrowsers = this._browsers.length;
   };
 
   /**
