@@ -48,5 +48,5 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Added ability to pass an option in your config to suppress the error report (see above)
-    - special thanks to Ryan Bogle for this feature
+ - Refactored code
+ - Fixed issue #6
