@@ -1,7 +1,12 @@
+[![npm version](https://badge.fury.io/js/karma-nyan-reporter.svg)](http://badge.fury.io/js/karma-nyan-reporter)
+[![Build Status](https://travis-ci.org/dgarlitt/karma-nyan-reporter.svg)](https://travis-ci.org/dgarlitt/karma-nyan-reporter)
+[![Coverage Status](https://coveralls.io/repos/dgarlitt/karma-nyan-reporter/badge.svg)](https://coveralls.io/r/dgarlitt/karma-nyan-reporter)
+<!-- [![Dependency Status](https://david-dm.org/dgarlitt/karma-nyan-reporter.svg)](https://david-dm.org/dgarlitt/karma-nyan-reporter) -->
+
 karma-nyan-reporter
 ===================
 
-Nyan Cat style reporter cobbled together from the [Mocha](http://visionmedia.github.io/mocha/) version
+Nyan Cat style reporter originally cobbled together from the [Mocha](http://visionmedia.github.io/mocha/) version
 
 ![alt text](https://googledrive.com/host/0BxhEGuYWG8zAWHlxTmtNbWtibEE/karma-nyan-reporter.gif "Nyan Cat Reporter for Karma")
 
