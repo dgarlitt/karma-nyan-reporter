@@ -8,6 +8,9 @@ chai.config.includeStack = true;
 chai.use(require('sinon-chai'));
 
 var expect = chai.expect;
+var assert = chai.assert;
+var eq = assert.equal;
+var ok = assert.ok;
 
 describe('nyanCat.js test suite', function() {
   var sut;
@@ -31,7 +34,8 @@ describe('nyanCat.js test suite', function() {
       'drawScoreboard' : sinon.spy(),
       'drawRainbow' : sinon.spy(),
       'drawNyanCat' : sinon.spy(),
-      'tick' : true
+      'tick' : true,
+      'moveCursorBelowTheDrawing' : sinon.spy()
     };
 
     drawUtilFake = {
@@ -384,6 +388,7 @@ describe('nyanCat.js test suite', function() {
     beforeEach(function(done) {
       sut = new module.NyanCat(null, null, configFake);
       sut.browserErrors = [];
+      sut.drawUtil = drawUtilInstanceFake;
       sut.dataStore = dataStoreInstanceFake;
       sut.stats = 'stats';
       sut.browser_logs = 'browser_logs';
@@ -396,23 +401,30 @@ describe('nyanCat.js test suite', function() {
     });
 
     it('should call the expected methods when browserErrors is empty', function() {
+      var duif = drawUtilInstanceFake;
+
       sut.onRunComplete();
 
-      expect(printersFake.printTestFailures.calledOnce).to.be.true;
-      expect(printersFake.printTestFailures.calledWithExactly(sut.dataStore.getData(), sut.options.suppressErrorReport)).to.be.true;
+      ok(duif.moveCursorBelowTheDrawing.calledOnce);
+      ok(duif.moveCursorBelowTheDrawing.calledWithExactly());
 
-      expect(printersFake.printStats.calledOnce).to.be.true;
-      expect(printersFake.printStats.calledWithExactly(sut.stats)).to.be.true;
+      ok(printersFake.printTestFailures.calledOnce);
+      ok(printersFake.printTestFailures
+                        .calledWithExactly(sut.dataStore.getData(),
+                                           sut.options.suppressErrorReport));
 
-      expect(printersFake.printBrowserLogs.calledOnce).to.be.true;
-      expect(printersFake.printBrowserLogs.calledWithExactly(sut.browser_logs)).to.be.true;
+      ok(printersFake.printStats.calledOnce);
+      ok(printersFake.printStats.calledWithExactly(sut.stats));
+
+      ok(printersFake.printBrowserLogs.calledOnce);
+      ok(printersFake.printBrowserLogs.calledWithExactly(sut.browser_logs));
     });
 
     it('should call the expected methods when borwserErrors is not empty', function() {
       sut.browserErrors.push('I\'m an error');
       sut.rainbowifier = rainbowifierInstanceFake;
       sut.onRunComplete();
-      expect(printersFake.printRuntimeErrors.calledWithExactly(rainbowifierInstanceFake.rainbowify)).to.be.true;
+      ok(printersFake.printRuntimeErrors.calledWithExactly(rainbowifierInstanceFake.rainbowify));
     });
   });
 
@@ -430,14 +442,14 @@ describe('nyanCat.js test suite', function() {
       sut.numberOfBrowsers = 0;
 
       sut.onBrowserStart(browser1);
-      expect(sut._browsers.length).to.eq(1);
-      expect(sut._browsers[0]).to.eq(browser1);
-      expect(sut.numberOfBrowsers).to.eq(sut._browsers.length);
+      eq(1, sut._browsers.length);
+      eq(browser1, sut._browsers[0]);
+      eq(sut._browsers.length, sut.numberOfBrowsers);
 
       sut.onBrowserStart(browser2);
-      expect(sut._browsers.length).to.eq(2);
-      expect(sut._browsers[1]).to.eq(browser2);
-      expect(sut.numberOfBrowsers).to.eq(sut._browsers.length);
+      eq(2, sut._browsers.length);
+      eq(browser2, sut._browsers[1]);
+      eq(sut._browsers.length, sut.numberOfBrowsers);
     });
   });
 

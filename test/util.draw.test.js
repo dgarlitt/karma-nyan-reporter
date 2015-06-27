@@ -303,4 +303,18 @@ describe('util/draw.js test suite', function() {
       expect(fakeWrite.calledWithExactly('up')).to.be.true;
     });
   });
+
+  /**
+   * moveCursorBelowTheDrawing() tests
+   */
+
+  describe('moveCursorBelowTheDrawing method tests', function() {
+    it('should call write with the expected values', function() {
+      sut.moveCursorBelowTheDrawing();
+      eq(5, fakeWrite.callCount);
+      for(var i = 0; i < fakeWrite.callCount; i++) {
+        ok(fakeWrite.getCall(i).calledWithExactly('\n'));
+      }
+    });
+  });
 });

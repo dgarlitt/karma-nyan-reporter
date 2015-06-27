@@ -71,7 +71,7 @@ describe('data/types.js test suite', function() {
       };
 
       var expected = [
-        'underline>' + name,
+        right + 'underline>' + name,
         tests.join('\n\n'),
         '',
         suites.join('\n\n'),
@@ -105,7 +105,7 @@ describe('data/types.js test suite', function() {
 
       eq(expected, actual);
       ok(clcFake.right.calledOnce);
-      ok(clcFake.right.calledWithExactly(sut.depth * tab));
+      ok(clcFake.right.calledWithExactly(sut.depth * tab + 1));
       ok(clcFake.white.calledOnce);
       ok(clcFake.white.calledWithExactly(name));
     });
@@ -152,7 +152,7 @@ describe('data/types.js test suite', function() {
 
       eq(expected, actual);
       ok(clcFake.right.calledOnce);
-      ok(clcFake.right.calledWithExactly(depth * tab));
+      ok(clcFake.right.calledWithExactly(depth * tab + 1));
       ok(clcFake.red.calledOnce);
       ok(clcFake.red.calledWithExactly(name));
     });
@@ -187,10 +187,10 @@ describe('data/types.js test suite', function() {
       sut.toString();
 
       eq(4, clcFake.right.callCount);
-      ok(clcFake.right.getCall(0).calledWithExactly(depth * tab));
-      ok(clcFake.right.getCall(1).calledWithExactly((depth + 1) * tab));
-      ok(clcFake.right.getCall(2).calledWithExactly((depth + 2) * tab));
-      ok(clcFake.right.getCall(3).calledWithExactly((depth + 2) * tab));
+      ok(clcFake.right.getCall(0).calledWithExactly(depth * tab + 1));
+      ok(clcFake.right.getCall(1).calledWithExactly((depth + 1) * tab + 1));
+      ok(clcFake.right.getCall(2).calledWithExactly((depth + 2) * tab + 1));
+      ok(clcFake.right.getCall(3).calledWithExactly((depth + 2) * tab + 1));
     });
 
     it('should call the color methods on clc as expected when toString is called', function() {
