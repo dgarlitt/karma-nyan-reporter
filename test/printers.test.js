@@ -185,7 +185,7 @@ describe('printers.js test suite', function() {
   describe('printStats method tests', function() {
 
     var writeFake;
-    var fakeStats;
+    var stats;
     var tab;
 
     beforeEach(function(done) {
@@ -193,20 +193,22 @@ describe('printers.js test suite', function() {
       writeFake = sinon.stub();
       writeFake.returnsArg(0);
 
-      clcFake.right.returns(tab);
-      clcFake.green.returns('green');
-      clcFake.red.returns('red');
-      clcFake.cyan.returns('cyan');
-
-      fakeStats = {
-        success: 20,
-        failed: 30,
-        skipped: 40
+      stats = {
+        'total': 11,
+        'success': 33,
+        'failed': 66,
+        'skipped': 99
       };
+
+      clcFake.right.returns(tab);
+      clcFake.yellow.withArgs(stats.total + ' total').returns('yellow>' + stats.total);
+      clcFake.green.withArgs(stats.success + ' passed').returns('green>' + stats.success);
+      clcFake.red.withArgs(stats.failed + ' failed').returns('red>' + stats.failed);
+      clcFake.cyan.withArgs(stats.skipped + ' skipped').returns('cyan>' + stats.skipped);
 
       sut.__set__('write', writeFake);
 
-      sut.printStats(fakeStats);
+      sut.printStats(stats);
 
       done();
     });
@@ -218,36 +220,27 @@ describe('printers.js test suite', function() {
     });
 
     it('should call write the expected number of times', function() {
-      eq(8, writeFake.callCount);
+      eq(10, writeFake.callCount);
     });
 
     it('should call clc.right as expected', function() {
-      eq(3, clcFake.right.callCount);
+      eq(4, clcFake.right.callCount);
       ok(clcFake.right.firstCall.calledWithExactly(3));
       ok(clcFake.right.secondCall.calledWithExactly(3));
       ok(clcFake.right.thirdCall.calledWithExactly(3));
     });
 
-    it('should call the other clc methods as expected', function() {
-      ok(clcFake.green.calledOnce);
-      ok(clcFake.green.calledWithExactly(fakeStats.success + ' passed'));
-
-      ok(clcFake.red.calledOnce);
-      ok(clcFake.red.calledWithExactly(fakeStats.failed + ' failed'));
-
-      ok(clcFake.cyan.calledOnce);
-      ok(clcFake.cyan.calledWithExactly(fakeStats.skipped + ' skipped'));
-    });
-
     it('should call write with the expected arguments', function() {
       ok(writeFake.getCall(0).calledWithExactly(tab));
-      ok(writeFake.getCall(1).calledWithExactly('green'));
+      ok(writeFake.getCall(1).calledWithExactly('yellow>' + stats.total));
       ok(writeFake.getCall(2).calledWithExactly(tab));
-      ok(writeFake.getCall(3).calledWithExactly('red'));
+      ok(writeFake.getCall(3).calledWithExactly('green>' + stats.success));
       ok(writeFake.getCall(4).calledWithExactly(tab));
-      ok(writeFake.getCall(5).calledWithExactly('cyan'));
-      ok(writeFake.getCall(6).calledWithExactly('\n'));
-      ok(writeFake.getCall(7).calledWithExactly('\n'));
+      ok(writeFake.getCall(5).calledWithExactly('red>' + stats.failed));
+      ok(writeFake.getCall(6).calledWithExactly(tab));
+      ok(writeFake.getCall(7).calledWithExactly('cyan>' + stats.skipped));
+      ok(writeFake.getCall(8).calledWithExactly('\n'));
+      ok(writeFake.getCall(9).calledWithExactly('\n'));
     });
   });
 

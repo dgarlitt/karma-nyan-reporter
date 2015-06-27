@@ -8,6 +8,9 @@ chai.config.includeStack = true;
 chai.use(require('sinon-chai'));
 
 var expect = chai.expect;
+var assert = chai.assert;
+var ok = assert.ok;
+var eq = assert.equal;
 
 describe('util/draw.js test suite', function() {
   var sut;
@@ -15,22 +18,23 @@ describe('util/draw.js test suite', function() {
   var shellWidth;
   var fakeColors;
   var fakeWrite;
-
+  var clcFake;
 
   beforeEach(function(done) {
     fakeWrite = sinon.spy();
-    fakeColors = {
-      'pass' : 'pass',
-      'fail' : 'fail',
-      'skip' : 'skip'
-    };
-
     shellWidth = 100;
-
+    clcFake = {
+      up: sinon.stub(),
+      yellow: sinon.stub(),
+      green: sinon.stub(),
+      red: sinon.stub(),
+      cyan: sinon.stub()
+    };
     module = rewire('../lib/util/draw');
 
     sut = module.getInstance(shellWidth);
 
+    module.__set__('clc', clcFake);
     module.__set__('write', fakeWrite);
 
     done();
@@ -146,15 +150,21 @@ describe('util/draw.js test suite', function() {
 
     beforeEach(function(done) {
       stats = {
+        'total': 11,
         'success': 33,
         'failed': 66,
         'skipped': 99
       };
-
+      // \u001b[' + color + 'm' + n + '\u001b[0m
       numOfLns = 111;
 
       sut.cursorUp = sinon.spy();
       sut.numberOfLines = numOfLns;
+
+      clcFake.yellow.withArgs(stats.total).returns('yellow>' + stats.total);
+      clcFake.green.withArgs(stats.success).returns('green>' + stats.success);
+      clcFake.red.withArgs(stats.failed).returns('red>' + stats.failed);
+      clcFake.cyan.withArgs(stats.skipped).returns('cyan>' + stats.skipped);
 
       sut.drawScoreboard(stats);
       done();
@@ -168,25 +178,21 @@ describe('util/draw.js test suite', function() {
     });
 
     it('should call the write method with the correct values', function() {
-      expect(fakeWrite.callCount).to.eq(10);
+      var expected;
 
-      var pass = '\u001b[' + sut.colors.pass + 'm' + stats.success + '\u001b[0m';
-      var fail = '\u001b[' + sut.colors.fail + 'm' + stats.failed + '\u001b[0m';
-      var skip = '\u001b[' + sut.colors.skip + 'm' + stats.skipped + '\u001b[0m';
+      eq(4, fakeWrite.callCount);
 
-      expect(fakeWrite.getCall(0).args[0]).to.eq(' ');
-      expect(fakeWrite.getCall(1).args[0]).to.eq(pass);
-      expect(fakeWrite.getCall(2).args[0]).to.eq('\n');
+      expected = ' yellow>' + stats.total + '\n';
+      ok(fakeWrite.getCall(0).calledWithExactly(expected));
 
-      expect(fakeWrite.getCall(3).args[0]).to.eq(' ');
-      expect(fakeWrite.getCall(4).args[0]).to.eq(fail);
-      expect(fakeWrite.getCall(5).args[0]).to.eq('\n');
+      expected = ' green>' + stats.success + '\n';
+      ok(fakeWrite.getCall(1).calledWithExactly(expected));
 
-      expect(fakeWrite.getCall(6).args[0]).to.eq(' ');
-      expect(fakeWrite.getCall(7).args[0]).to.eq(skip);
-      expect(fakeWrite.getCall(8).args[0]).to.eq('\n');
+      expected = ' red>' + stats.failed + '\n';
+      ok(fakeWrite.getCall(2).calledWithExactly(expected));
 
-      expect(fakeWrite.getCall(9).args[0]).to.eq('\n');
+      expected = ' cyan>' + stats.skipped + '\n';
+      ok(fakeWrite.getCall(3).calledWithExactly(expected));
     });
 
     it('should call cursorUp with numberOfLines', function() {
@@ -288,8 +294,6 @@ describe('util/draw.js test suite', function() {
   describe('cursorUp method tests', function() {
     it('should call write with the expected values', function() {
       var arg = 'blah';
-      var clcFake = { up: sinon.stub() };
-      module.__set__('clc', clcFake);
 
       clcFake.up.returns('up');
 
