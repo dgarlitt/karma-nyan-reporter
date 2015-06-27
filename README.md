@@ -8,27 +8,31 @@ karma-nyan-reporter
 
 Nyan Cat style reporter originally cobbled together from the [Mocha](http://visionmedia.github.io/mocha/) version
 
-![alt text](https://googledrive.com/host/0BxhEGuYWG8zAWHlxTmtNbWtibEE/karma-nyan-reporter.gif "Nyan Cat Reporter for Karma")
+![Karma Nyan Cat Reporter for Karma](http://i.imgur.com/ZERpMgx.gif "Karma Nyan Cat Reporter for Karma")
 
 Installation
 ========
 
 Installation is simple using npm, just run the following command:
 
-    npm install --save-dev karma-nyan-reporter
+```sh
+npm install --save-dev karma-nyan-reporter
+```
 
 Since this follows Karma's plugin naming convention, that's all there is to it!
 
 Now, run your tests and enjoy:
 
-    karma start path/to/karma.conf.js --reporters nyan
+```sh
+karma start path/to/karma.conf.js --reporters nyan
+```
 
 Error and Logging Output
 =========
 
 Here is a screenshot of the error and logging output. The errors are displayed heirarchically based on the test suite and nesting level. ```console.log()``` messages are output at the bottom (in blue) below the test summary and grouped by browser.
 
-![alt text](https://googledrive.com/host/0BxhEGuYWG8zAWHlxTmtNbWtibEE/karma-nyan-reporter-errors.png "Nyan Cat Reporter Error Output")
+![Karma Nyan Cat Reporter Error Output](http://i.imgur.com/addD96Z.png "Karma Nyan Cat Reporter Error Output")
 
 Options
 =========
@@ -53,5 +57,6 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Refactored code
- - Fixed issue #6
+ - Significant refactor of the codebase
+ - Added tests, ci, coverage
+ - Added feature requested in issue [#11](https://github.com/dgarlitt/karma-nyan-reporter/issues/11) - Show total test count
