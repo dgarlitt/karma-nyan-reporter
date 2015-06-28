@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/karma-nyan-reporter.svg)](http://badge.fury.io/js/karma-nyan-reporter)
 [![Build Status](https://travis-ci.org/dgarlitt/karma-nyan-reporter.svg)](https://travis-ci.org/dgarlitt/karma-nyan-reporter)
-[![Coverage Status](https://coveralls.io/repos/dgarlitt/karma-nyan-reporter/badge.svg)](https://coveralls.io/r/dgarlitt/karma-nyan-reporter)
+[![Coverage Status](https://coveralls.io/repos/dgarlitt/karma-nyan-reporter/badge.svg?branch=master)](https://coveralls.io/r/dgarlitt/karma-nyan-reporter?branch=master)
 <!-- [![Dependency Status](https://david-dm.org/dgarlitt/karma-nyan-reporter.svg)](https://david-dm.org/dgarlitt/karma-nyan-reporter) -->
 
 karma-nyan-reporter
