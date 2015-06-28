@@ -10,92 +10,56 @@ chai.use(require('sinon-chai'));
 var assert = chai.assert;
 var eq = assert.equal;
 var ok = assert.ok;
-var nok = assert.notOk;
 
 describe('util/shell.js test suite', function() {
-  var writeFake;
-  var realGetWindowSize;
-  var ttyFake;
   var module;
   var sut;
-  var winSizeArr;
+  var fakeWrite;
+  var fakeStdout;
+  var fakeWinSize;
+  var expected, actual;
 
   beforeEach(function(done) {
-    realGetWindowSize = process.stdout.getWindowSize;
-    writeFake = sinon.stub();
-    process.stdout.getWindowSize = null;
-    winSizeArr = [200, 400];
+    fakeWrite = sinon.stub();
 
-    ttyFake = {
-      isatty: sinon.stub(),
+    fakeStdout = {
       getWindowSize: sinon.stub()
     };
 
-    ttyFake.isatty.withArgs(1).returns(true);
-    ttyFake.isatty.withArgs(2).returns(true);
-    ttyFake.getWindowSize.returns(winSizeArr);
+    fakeWinSize = [200, 100];
+    fakeStdout.getWindowSize.withArgs(1).returns(fakeWinSize);
 
     module = rewire('../lib/util/shell');
-    module.__set__('tty', ttyFake);
-    module.__set__('write', writeFake);
+    module.__set__('write', fakeWrite);
+    module.__set__('stdout', fakeStdout);
+    module.__set__('isTTY', true);
+    module.__set__('useStdout', true);
 
     done();
   });
 
   afterEach(function(done) {
-    writeFake = null;
-    ttyFake = null;
     module = null;
     sut = null;
-    winSizeArr = null;
-    process.stdout.getWindowSize = realGetWindowSize;
-    realGetWindowSize = null;
+    fakeStdout = null;
+    fakeWinSize = null;
+    expected = null;
+    actual = null;
     done();
   });
 
-  describe('ShellUtility constructor tests', function() {
-
-    it('should set isatty as expected when isatty is true', function() {
+  describe('ShellUtility getWidth & getHeight method tests', function() {
+    it('should use stdout.getWindowSize(1) when useStdout is true', function() {
       sut = module.getInstance();
-      ok(sut.isatty);
-
-      ttyFake.isatty.withArgs(1).returns(false);
-      sut = module.getInstance();
-      nok(sut.isatty);
-
-      ttyFake.isatty.withArgs(2).returns(false);
-      sut = module.getInstance();
-      nok(sut.isatty);
-
-      ttyFake.isatty.withArgs(1).returns(true);
-      sut = module.getInstance();
-      nok(sut.isatty);
+      eq(fakeWinSize[0], sut.getWidth());
+      eq(fakeWinSize[1], sut.getHeight());
     });
 
-    it('should set window.width to tty.getWindowSize() @index 1' +
-       'when isatty & process.stdout.getWindowSize does not exist', function() {
-        sut = module.getInstance();
-        ok(sut.isatty);
-        eq(400, sut.window.width);
-    });
-
-    it('should set window.width to the expected size when isatty is false', function() {
-      ttyFake.isatty.withArgs(1).returns(false);
+    it('should use alternative when useStdout is false', function() {
+      module.__set__('useStdout', false);
       sut = module.getInstance();
-      nok(sut.isatty);
-      eq(75, sut.window.width);
-    });
-
-    it('should return process.stdout.getWindowSize(1)[0] when' +
-       'proess.stdout.getWindowSize exists', function() {
-        var getWindowSizeFake = sinon.stub();
-        process.stdout.getWindowSize = getWindowSizeFake;
-        getWindowSizeFake.withArgs(1).returns(winSizeArr);
-        sut = module.getInstance();
-        ok(sut.isatty);
-        ok(getWindowSizeFake.calledOnce);
-        ok(getWindowSizeFake.calledWithExactly(1));
-        eq(200, sut.window.width);
+      eq(75, sut.getWidth());
+      eq(4, sut.getHeight());
     });
   });
 
@@ -107,8 +71,6 @@ describe('util/shell.js test suite', function() {
       show = '\u001b[?25h';
       deleteLine = '\u001b[2K';
       beginningOfLine = '\u001b[0G';
-
-      sut = module.getInstance();
       done();
     });
 
@@ -117,95 +79,104 @@ describe('util/shell.js test suite', function() {
       done();
     });
 
-    describe('cursor.hide tests', function() {
-      it('should call write with the expected value', function() {
-        sut.cursor.hide();
-        ok(sut.isatty);
-        ok(writeFake.calledOnce);
-        ok(writeFake.calledWithExactly(hide));
+    describe('when isTTY is true', function() {
+      beforeEach(function(done) {
+        sut = module.getInstance();
+        done();
       });
 
-      it('should not call write', function() {
-        sut.isatty = false;
-        nok(sut.isatty);
-        sut.cursor.hide();
-        ok(writeFake.notCalled);
-      });
-    });
-
-    describe('cursor.show tests', function() {
-      it('should call write with the expected value', function() {
-        sut.cursor.show();
-        ok(sut.isatty);
-        ok(writeFake.calledOnce);
-        ok(writeFake.calledWithExactly(show));
+      describe('cursor.hide tests', function() {
+        it('should call write with the expected value', function() {
+          sut.cursor.hide();
+          ok(fakeWrite.calledOnce);
+          ok(fakeWrite.calledWithExactly(hide));
+        });
       });
 
-      it('should not call write', function() {
-        sut.isatty = false;
-        nok(sut.isatty);
-        sut.cursor.show();
-        ok(writeFake.notCalled);
-      });
-    });
-
-    describe('cursor.deleteLine tests', function() {
-      it('should call write with the expected value', function() {
-        sut.cursor.deleteLine();
-        ok(sut.isatty);
-        ok(writeFake.calledOnce);
-        ok(writeFake.calledWithExactly(deleteLine));
+      describe('cursor.show tests', function() {
+        it('should call write with the expected value', function() {
+          sut.cursor.show();
+          ok(fakeWrite.calledOnce);
+          ok(fakeWrite.calledWithExactly(show));
+        });
       });
 
-      it('should not call write', function() {
-        sut.isatty = false;
-        nok(sut.isatty);
-        sut.cursor.deleteLine();
-        ok(writeFake.notCalled);
-      });
-    });
-
-    describe('cursor.beginningOfLine tests', function() {
-      it('should call write with the expected value', function() {
-        sut.cursor.beginningOfLine();
-        ok(sut.isatty);
-        ok(writeFake.calledOnce);
-        ok(writeFake.calledWithExactly(beginningOfLine));
+      describe('cursor.deleteLine tests', function() {
+        it('should call write with the expected value', function() {
+          sut.cursor.deleteLine();
+          ok(fakeWrite.calledOnce);
+          ok(fakeWrite.calledWithExactly(deleteLine));
+        });
       });
 
-      it('should not call write', function() {
-        sut.isatty = false;
-        nok(sut.isatty);
-        sut.cursor.beginningOfLine();
-        ok(writeFake.notCalled);
+      describe('cursor.beginningOfLine tests', function() {
+        it('should call write with the expected value', function() {
+          sut.cursor.beginningOfLine();
+          ok(fakeWrite.calledOnce);
+          ok(fakeWrite.calledWithExactly(beginningOfLine));
+        });
+      });
+
+      describe('CR tests', function() {
+        it('should call cursor.deleteLine and cursor.beginningOfLine', function() {
+          var dlFake = sinon.stub();
+          sut.cursor.deleteLine = dlFake;
+
+          var bolFake = sinon.stub();
+          sut.cursor.beginningOfLine = bolFake;
+
+          sut.cursor.CR();
+
+          ok(dlFake.withArgs().calledOnce);
+          ok(bolFake.withArgs().calledOnce);
+        });
       });
     });
 
-    describe('CR tests', function() {
-      it('should call write with \\n when isatty is false', function() {
-        sut.isatty = false;
-        nok(sut.isatty);
-        sut.cursor.CR();
-        ok(writeFake.calledOnce);
-        ok(writeFake.calledWithExactly('\n'));
+    describe('when isTTY is false', function() {
+      beforeEach(function(done) {
+        module.__set__('isTTY', false);
+        sut = module.getInstance();
+        done();
       });
 
-      it('should call cursor.deleteLine and cursor.beginningOfLine when isatty', function() {
-        var dlFake = sinon.stub();
-        sut.cursor.deleteLine = dlFake;
+      describe('cursor.hide tests', function() {
+        it('should not call write', function() {
+          sut.cursor.hide();
+          ok(fakeWrite.notCalled);
+        });
+      });
 
-        var bolFake = sinon.stub();
-        sut.cursor.beginningOfLine = bolFake;
+      describe('cursor.show tests', function() {
+        it('should not call write', function() {
+          sut.cursor.show();
+          ok(fakeWrite.notCalled);
+        });
+      });
 
-        ok(sut.isatty);
+      describe('cursor.deleteLine tests', function() {
+        it('should not call write', function() {
+          sut.cursor.deleteLine();
+          ok(fakeWrite.notCalled);
+        });
+      });
 
-        sut.cursor.CR();
+      describe('cursor.beginningOfLine tests', function() {
+        it('should not call write', function() {
+          sut.cursor.beginningOfLine();
+          ok(fakeWrite.notCalled);
+        });
+      });
 
-        ok(dlFake.withArgs().calledOnce);
-        ok(bolFake.withArgs().calledOnce);
+      describe('CR tests', function() {
+        it('should call write with \\n', function() {
+          sut.cursor.CR();
+          ok(fakeWrite.calledOnce);
+          ok(fakeWrite.calledWithExactly('\n'));
+        });
       });
     });
+
   });
-
 
 });

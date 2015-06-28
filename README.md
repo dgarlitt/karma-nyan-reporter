@@ -49,7 +49,12 @@ module.exports = function(config) {
 
     // reporter options
     nyanReporter: {
-      suppressErrorReport: true
+      // suppress the error report at the end of the test run
+      suppressErrorReport: true,
+
+      // increase the number of rainbow lines displayed
+      // enforced min = 4, enforced max = terminal height - 1
+      numberOfRainbowLines = 100 // default is 4
     }
   });
 };
@@ -60,3 +65,4 @@ In this release
  - Significant refactor of the codebase
  - Added tests, ci, coverage
  - Added feature requested in issue [#11](https://github.com/dgarlitt/karma-nyan-reporter/issues/11) - Show total test count
+ - Ability to increase the number of rainbow lines displayed (rainbowify th whole screen if you want!)

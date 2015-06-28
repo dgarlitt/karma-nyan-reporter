@@ -35,7 +35,7 @@ describe('nyanCat.js test suite', function() {
       'drawRainbow' : sinon.spy(),
       'drawNyanCat' : sinon.spy(),
       'tick' : true,
-      'moveCursorBelowTheDrawing' : sinon.spy()
+      'fillWithNewlines' : sinon.spy()
     };
 
     drawUtilFake = {
@@ -405,8 +405,8 @@ describe('nyanCat.js test suite', function() {
 
       sut.onRunComplete();
 
-      ok(duif.moveCursorBelowTheDrawing.calledOnce);
-      ok(duif.moveCursorBelowTheDrawing.calledWithExactly());
+      ok(duif.fillWithNewlines.calledOnce);
+      ok(duif.fillWithNewlines.calledWithExactly());
 
       ok(printersFake.printTestFailures.calledOnce);
       ok(printersFake.printTestFailures

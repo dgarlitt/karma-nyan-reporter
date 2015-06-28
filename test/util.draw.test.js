@@ -15,14 +15,28 @@ var eq = assert.equal;
 describe('util/draw.js test suite', function() {
   var sut;
   var module;
+  var numOfLns;
   var shellWidth;
+  var shellHeight;
   var fakeColors;
   var fakeWrite;
   var clcFake;
+  var shellFake;
 
   beforeEach(function(done) {
     fakeWrite = sinon.spy();
+    numOfLns = 4;
     shellWidth = 100;
+    shellHeight = 50;
+
+    shellFake = {
+      getWidth: sinon.stub(),
+      getHeight: sinon.stub()
+    };
+
+    shellFake.getWidth.returns(shellWidth);
+    shellFake.getHeight.returns(shellHeight);
+
     clcFake = {
       up: sinon.stub(),
       yellow: sinon.stub(),
@@ -30,9 +44,12 @@ describe('util/draw.js test suite', function() {
       red: sinon.stub(),
       cyan: sinon.stub()
     };
+
     module = rewire('../lib/util/draw');
 
-    sut = module.getInstance(shellWidth);
+    module.__set__('shell', shellFake);
+
+    sut = module.getInstance(numOfLns);
 
     module.__set__('clc', clcFake);
     module.__set__('write', fakeWrite);
@@ -43,21 +60,28 @@ describe('util/draw.js test suite', function() {
   afterEach(function(done) {
     sut = null;
     module = null;
+    numOfLns = null;
     shellWidth = null;
     fakeColors = null;
     fakeWrite = null;
+    shellFake = null;
+    clcFake = null;
     done();
   });
 
   describe('instantiation tests', function() {
     it('should set the defaults values appropriately', function() {
-      var maxWidth = sut.trajectoryWidthMax;
-      expect(sut.numberOfLines).to.eq(4);
-      expect(sut.nyanCatWidth).to.eq(11);
-      expect(sut.scoreboardWidth).to.eq(5);
-      expect(sut.tick).to.eq(0);
-      expect(sut.trajectories).to.eql([[], [], [], []]);
-      expect(maxWidth).to.eq((shellWidth * 0.75 | 0) - sut.nyanCatWidth);
+      var expected, actual;
+
+      eq(4, sut.numberOfLines);
+      eq(11, sut.nyanCatWidth);
+      eq(5, sut.scoreboardWidth);
+      eq(0, sut.tick);
+      assert.deepEqual([[], [], [], []], sut.trajectories);
+
+      expected = (shellWidth * 0.75 | 0) - sut.nyanCatWidth;
+      actual = sut.trajectoryWidthMax;
+      eq(expected, actual);
     });
   });
 
@@ -155,7 +179,9 @@ describe('util/draw.js test suite', function() {
         'failed': 66,
         'skipped': 99
       };
-      // \u001b[' + color + 'm' + n + '\u001b[0m
+
+      sut.fillWithNewlines = sinon.stub();
+
       numOfLns = 111;
 
       sut.cursorUp = sinon.spy();
@@ -193,6 +219,11 @@ describe('util/draw.js test suite', function() {
 
       expected = ' cyan>' + stats.skipped + '\n';
       ok(fakeWrite.getCall(3).calledWithExactly(expected));
+    });
+
+    it('should call fillWithNewlines once with the expected value', function() {
+      ok(sut.fillWithNewlines.calledOnce);
+      ok(sut.fillWithNewlines.calledWithExactly(5));
     });
 
     it('should call cursorUp with numberOfLines', function() {
@@ -305,12 +336,12 @@ describe('util/draw.js test suite', function() {
   });
 
   /**
-   * moveCursorBelowTheDrawing() tests
+   * fillWithNewlines() tests
    */
 
-  describe('moveCursorBelowTheDrawing method tests', function() {
-    it('should call write with the expected values', function() {
-      sut.moveCursorBelowTheDrawing();
+  describe('fillWithNewlines method tests', function() {
+    it('should draw a newline character the expected number of times', function() {
+      sut.fillWithNewlines();
       eq(5, fakeWrite.callCount);
       for(var i = 0; i < fakeWrite.callCount; i++) {
         ok(fakeWrite.getCall(i).calledWithExactly('\n'));
