@@ -90,7 +90,7 @@ describe('nyanCat.js test suite', function() {
     };
 
     defaultPropertyKeys = [
-      'options', 'adapterMessages', 'adapters'
+      'options', 'adapters'
     ];
 
     module = rewire('../lib/nyanCat');
@@ -139,9 +139,6 @@ describe('nyanCat.js test suite', function() {
       expect(sut.adapters[0]).to.be.a.function;
 
       sut.adapters[0](msg);
-
-      expect(sut.adapterMessages).to.have.length(1);
-      expect(sut.adapterMessages[0]).to.equal(msg);
     });
 
     it('should set options when passed in via config', function() {
