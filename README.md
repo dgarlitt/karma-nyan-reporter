@@ -62,7 +62,5 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Significant refactor of the codebase
- - Added tests, ci, coverage
- - Added feature requested in issue [#11](https://github.com/dgarlitt/karma-nyan-reporter/issues/11) - Show total test count
- - Ability to increase the number of rainbow lines displayed (rainbowify th whole screen if you want!)
+ - 100% code coverage to support refactor
+ - Special thanks to @yhnavein for identifying and fixing [issue #10](https://github.com/dgarlitt/karma-nyan-reporter/issues/10)
