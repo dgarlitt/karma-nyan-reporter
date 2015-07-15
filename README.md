@@ -54,7 +54,7 @@ module.exports = function(config) {
 
       // increase the number of rainbow lines displayed
       // enforced min = 4, enforced max = terminal height - 1
-      numberOfRainbowLines = 100 // default is 4
+      numberOfRainbowLines: 100 // default is 4
     }
   });
 };
