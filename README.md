@@ -62,5 +62,4 @@ module.exports = function(config) {
 
 In this release
 -----------
- - 100% code coverage to support refactor
- - Special thanks to @yhnavein for identifying and fixing [issue #10](https://github.com/dgarlitt/karma-nyan-reporter/issues/10)
+ - Documentation fix
