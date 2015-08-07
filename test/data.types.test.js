@@ -25,7 +25,10 @@ describe('data/types.js test suite', function() {
       'red': sinon.stub(),
       'yellow': sinon.stub(),
       'redBright': sinon.stub(),
-      'blackBright': sinon.stub()
+      'blackBright': sinon.stub(),
+      'black': {
+        'bgRed': sinon.stub()
+      }
     };
 
     clcFake.right.returns(right);
@@ -168,7 +171,7 @@ describe('data/types.js test suite', function() {
     beforeEach(function(done) {
       name = 'browser';
       depth = 4;
-      errors = ['x', 'y', 'z'];
+      errors = ['Error Info', 'node_modules/y', 'z'];
 
       sut = new dt.Browser(name);
       sut.depth = depth;
@@ -202,9 +205,10 @@ describe('data/types.js test suite', function() {
       ok(clcFake.redBright.calledOnce);
       ok(clcFake.redBright.calledWithExactly(errors[0]));
 
-      ok(clcFake.blackBright.calledTwice);
+      ok(clcFake.blackBright.calledOnce);
       ok(clcFake.blackBright.getCall(0).calledWithExactly(errors[1]));
-      ok(clcFake.blackBright.getCall(1).calledWithExactly(errors[2]));
+      ok(clcFake.black.bgRed.calledOnce);
+      ok(clcFake.black.bgRed.getCall(0).calledWithExactly(errors[2]));
     });
 
     it('should return the expected string when toString is called', function() {
@@ -212,16 +216,18 @@ describe('data/types.js test suite', function() {
       var yellow = 'yellow>';
       var redBright = 'redBright>';
       var blackBright = 'blackBright>';
+      var bgRed = 'bgRed>';
 
       clcFake.yellow.returns(yellow);
       clcFake.redBright.returns(redBright);
       clcFake.blackBright.returns(blackBright);
+      clcFake.black.bgRed.returns(bgRed);
 
       expected = [
         right + yellow,
         right + '1) ' + redBright,
         right + blackBright,
-        right + blackBright,
+        right + bgRed,
       ].join('\n');
 
       actual = sut.toString();
@@ -229,38 +235,57 @@ describe('data/types.js test suite', function() {
       eq(expected, actual);
     });
 
-    it('should trim the garbage off of the errors', function() {
-      sut.errors = [
-        'Error Info',
-        'some/file.js?abcdef:123 ',
-        'another/file.js?oifdso:345:23 '
-      ];
-
-      sut.toString();
-
-      ok(clcFake.blackBright.calledTwice);
-      ok(clcFake.blackBright.getCall(0).calledWithExactly('some/file.js:123'));
-      ok(clcFake.blackBright.getCall(1).calledWithExactly('another/file.js:345:23'));
-    });
-
-    describe('setErrorFormatterMethod', function() {
-      it('should override the default errorFormatterMethod', function() {
+    describe('errorHighlighting', function() {
+      it('should not use black.bgRed when suppressErrorHighlighting is called', function() {
         sut.errors = [
           'Error Info',
           'error1',
           'error2'
         ];
 
-        var alternateFormatMethod = function(error) {
-          return 'Bob Dole ' + error;
-        };
-
-        dt.setErrorFormatterMethod(alternateFormatMethod);
+        dt.suppressErrorHighlighting();
         sut.toString();
 
         ok(clcFake.blackBright.calledTwice);
-        ok(clcFake.blackBright.getCall(0).calledWithExactly('Bob Dole error1'));
-        ok(clcFake.blackBright.getCall(1).calledWithExactly('Bob Dole error2'));
+      });
+    });
+
+    describe('errorFormatMethod tests', function() {
+      describe('default behavior', function() {
+        it('should trim the garbage off of the errors', function() {
+          sut.errors = [
+            'Error Info',
+            'some/file.js?abcdef:123 ',
+            'another/file.js?oifdso:345:23 '
+          ];
+
+          sut.toString();
+
+          ok(clcFake.black.bgRed.calledTwice);
+          ok(clcFake.black.bgRed.getCall(0).calledWithExactly('some/file.js:123'));
+          ok(clcFake.black.bgRed.getCall(1).calledWithExactly('another/file.js:345:23'));
+        });
+      });
+
+      describe('setErrorFormatterMethod', function() {
+        it('should override the default errorFormatterMethod', function() {
+          sut.errors = [
+            'Error Info',
+            'error1',
+            'error2'
+          ];
+
+          var alternateFormatMethod = function(error) {
+            return 'Bob Dole ' + error;
+          };
+
+          dt.setErrorFormatterMethod(alternateFormatMethod);
+          sut.toString();
+
+          ok(clcFake.black.bgRed.calledTwice);
+          ok(clcFake.black.bgRed.getCall(0).calledWithExactly('Bob Dole error1'));
+          ok(clcFake.black.bgRed.getCall(1).calledWithExactly('Bob Dole error2'));
+        });
       });
     });
   });

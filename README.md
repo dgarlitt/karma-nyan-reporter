@@ -53,9 +53,13 @@ module.exports = function(config) {
       // suppress the error report at the end of the test run
       suppressErrorReport: true,
 
+      // suppress the red background on errors in the error
+      // report at the end of the test run
+      suppressErrorHighlighting: true,
+
       // increase the number of rainbow lines displayed
       // enforced min = 4, enforced max = terminal height - 1
-      numberOfRainbowLines: 100 // default is 4
+      numberOfRainbowLines: 100, // default is 4
     }
   });
 };
@@ -64,3 +68,4 @@ module.exports = function(config) {
 In this release
 -----------
  - Fix for issue #15 - update code to use native Karma error formatter
+ - Added error highlighting for relevant error messages in the error report (can be disabled, see Optons section above)

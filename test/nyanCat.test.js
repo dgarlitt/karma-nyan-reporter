@@ -75,7 +75,8 @@ describe('nyanCat.js test suite', function() {
         .returns(dataStoreInstanceFake);
 
     dataTypesFake = {
-      'setErrorFormatterMethod' : sinon.spy()
+      'setErrorFormatterMethod' : sinon.spy(),
+      'suppressErrorHighlighting' : sinon.spy()
     };
 
     printersFake = {
@@ -156,13 +157,27 @@ describe('nyanCat.js test suite', function() {
     it('should set options when passed in via config', function() {
       configFake.nyanReporter = {
         'suppressErrorReport' : true,
+        'suppressErrorHighlighting' : true,
+        'numberOfRainbowLines' : 100,
         'someOtherOption' : 1234
       };
 
       sut = new module.NyanCat(null, formatterFake, configFake);
 
       expect(sut.options.suppressErrorReport).to.be.true;
+      expect(sut.options.suppressErrorHighlighting).to.be.true;
+      expect(sut.options.numberOfRainbowLines).to.eq(100);
       expect(sut.options.someOtherOption).to.be.undefined;
+    });
+
+    it('should suppressErrorHighlighting if option is set in config', function() {
+      configFake.nyanReporter = {
+        'suppressErrorHighlighting' : true
+      };
+
+      sut = new module.NyanCat(null, null, configFake);
+
+      expect(dataTypesFake.suppressErrorHighlighting.calledOnce).to.be.true;
     });
 
   });
