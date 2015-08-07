@@ -9,7 +9,7 @@ karma-nyan-reporter
 
 Nyan Cat style reporter originally cobbled together from the [Mocha](http://visionmedia.github.io/mocha/) version
 
-![Karma Nyan Cat Reporter for Karma](http://i.imgur.com/ZERpMgx.gif "Karma Nyan Cat Reporter for Karma")
+![Karma Nyan Cat Reporter for Karma](https://raw.githubusercontent.com/dgarlitt/image-repo/master/karma-nyan-reporter/v0.2.2/karma-nyan-reporter.gif "Karma Nyan Cat Reporter for Karma")
 
 Installation
 ========
@@ -33,7 +33,7 @@ Error and Logging Output
 
 Here is a screenshot of the error and logging output. The errors are displayed heirarchically based on the test suite and nesting level. ```console.log()``` messages are output at the bottom (in blue) below the test summary and grouped by browser.
 
-![Karma Nyan Cat Reporter Error Output](http://i.imgur.com/addD96Z.png "Karma Nyan Cat Reporter Error Output")
+![Karma Nyan Cat Reporter Error Output](https://raw.githubusercontent.com/dgarlitt/image-repo/master/karma-nyan-reporter/v0.2.2/karma-nyan-reporter-error-output.png "Karma Nyan Cat Reporter Error Output")
 
 Options
 =========
@@ -63,4 +63,4 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Documentation fix
+ - Fix for issue #15 - update code to use native Karma error formatter

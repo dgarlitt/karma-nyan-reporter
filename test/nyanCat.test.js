@@ -16,18 +16,21 @@ describe('nyanCat.js test suite', function() {
   var sut;
   var module;
   var configFake;
+  var formatterFake;
   var drawUtilInstanceFake;
   var drawUtilFake;
   var rainbowifierInstanceFake;
   var rainbowifierFake;
   var dataStoreInstanceFake;
   var dataStoreFake;
+  var dataTypesFake;
   var printersFake;
   var shellUtilFake;
   var defaultPropertyKeys;
 
   beforeEach(function(done) {
     configFake = {};
+    formatterFake = sinon.spy();
 
     drawUtilInstanceFake = {
       'appendRainbow' : sinon.spy(),
@@ -71,6 +74,10 @@ describe('nyanCat.js test suite', function() {
       .getInstance
         .returns(dataStoreInstanceFake);
 
+    dataTypesFake = {
+      'setErrorFormatterMethod' : sinon.spy()
+    };
+
     printersFake = {
       'write' : sinon.spy(),
       'printRuntimeErrors' : sinon.spy(),
@@ -97,6 +104,7 @@ describe('nyanCat.js test suite', function() {
     module.__set__('drawUtil', drawUtilFake);
     module.__set__('rainbowifier', rainbowifierFake);
     module.__set__('dataStore', dataStoreFake);
+    module.__set__('dataTypes', dataTypesFake);
     module.__set__('printers', printersFake);
     module.__set__('shellUtil', shellUtilFake);
     done();
@@ -106,10 +114,12 @@ describe('nyanCat.js test suite', function() {
     sut = null;
     module = null;
     configFake = null;
+    formatterFake = null;
     drawUtilInstanceFake = null;
     drawUtilFake = null;
     dataStoreInstanceFake = null;
     dataStoreFake = null;
+    dataTypesFake = null;
     printersFake = null;
     rainbowifierInstanceFake = null;
     rainbowifierFake = null;
@@ -127,7 +137,7 @@ describe('nyanCat.js test suite', function() {
     it('should have expected default properties', function() {
       var msg = 'my message';
 
-      sut = new module.NyanCat(null, null, configFake);
+      sut = new module.NyanCat(null, formatterFake, configFake);
 
       expect(sut).to.contain.keys(defaultPropertyKeys);
       expect(sut.options).to.not.be.an.object;
@@ -137,6 +147,8 @@ describe('nyanCat.js test suite', function() {
       expect(sut.adapters).to.be.an.array;
       expect(sut.adapters).to.have.length(1);
       expect(sut.adapters[0]).to.be.a.function;
+      expect(dataTypesFake.setErrorFormatterMethod.calledOnce).to.be.true;
+      expect(dataTypesFake.setErrorFormatterMethod.calledWithExactly(formatterFake)).to.be.true;
 
       sut.adapters[0](msg);
     });
@@ -147,7 +159,7 @@ describe('nyanCat.js test suite', function() {
         'someOtherOption' : 1234
       };
 
-      sut = new module.NyanCat(null, null, configFake);
+      sut = new module.NyanCat(null, formatterFake, configFake);
 
       expect(sut.options.suppressErrorReport).to.be.true;
       expect(sut.options.someOtherOption).to.be.undefined;

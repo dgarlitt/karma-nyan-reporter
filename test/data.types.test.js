@@ -39,7 +39,7 @@ describe('data/types.js test suite', function() {
    * Suite - class tests
    */
 
-  describe('Suite - class tests', function() {
+  describe('Suite - class ', function() {
     var sut, name, suites, tests;
 
     beforeEach(function(done) {
@@ -115,7 +115,7 @@ describe('data/types.js test suite', function() {
    * Test - class tests
    */
 
-  describe('Test - class tests', function() {
+  describe('Test - class ', function() {
     var sut, name, depth, browsers;
 
     beforeEach(function(done) {
@@ -162,7 +162,7 @@ describe('data/types.js test suite', function() {
    * Browser - class tests
    */
 
-  describe('Browser - class tests', function() {
+  describe('Browser - class ', function() {
     var sut, name, depth, errors;
 
     beforeEach(function(done) {
@@ -227,6 +227,41 @@ describe('data/types.js test suite', function() {
       actual = sut.toString();
 
       eq(expected, actual);
+    });
+
+    it('should trim the garbage off of the errors', function() {
+      sut.errors = [
+        'Error Info',
+        'some/file.js?abcdef:123 ',
+        'another/file.js?oifdso:345:23 '
+      ];
+
+      sut.toString();
+
+      ok(clcFake.blackBright.calledTwice);
+      ok(clcFake.blackBright.getCall(0).calledWithExactly('some/file.js:123'));
+      ok(clcFake.blackBright.getCall(1).calledWithExactly('another/file.js:345:23'));
+    });
+
+    describe('setErrorFormatterMethod', function() {
+      it('should override the default errorFormatterMethod', function() {
+        sut.errors = [
+          'Error Info',
+          'error1',
+          'error2'
+        ];
+
+        var alternateFormatMethod = function(error) {
+          return 'Bob Dole ' + error;
+        };
+
+        dt.setErrorFormatterMethod(alternateFormatMethod);
+        sut.toString();
+
+        ok(clcFake.blackBright.calledTwice);
+        ok(clcFake.blackBright.getCall(0).calledWithExactly('Bob Dole error1'));
+        ok(clcFake.blackBright.getCall(1).calledWithExactly('Bob Dole error2'));
+      });
     });
   });
 

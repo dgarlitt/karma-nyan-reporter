@@ -44,5 +44,5 @@
         "test": "./node_modules/mocha/bin/mocha -R spec ./test/*",
         "test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec  ./test/*"
     },
-    "version": "0.2.01"
+    "version": "0.2.2"
 }
