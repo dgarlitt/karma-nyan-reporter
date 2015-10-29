@@ -31,14 +31,14 @@ karma start path/to/karma.conf.js --reporters nyan
 Error and Logging Output
 =========
 
-Here is a screenshot of the error and logging output. The errors are displayed heirarchically based on the test suite and nesting level. ```console.log()``` messages are output at the bottom (in blue) below the test summary and grouped by browser.
+Here is a screenshot of the error and logging output. The errors are displayed hierarchically based on the test suite and nesting level. ```console.log()``` messages are output at the bottom (in blue) below the test summary and grouped by browser.
 
 ![Karma Nyan Cat Reporter Error Output](https://raw.githubusercontent.com/dgarlitt/image-repo/master/karma-nyan-reporter/v0.2.2/karma-nyan-reporter-error-output.png "Karma Nyan Cat Reporter Error Output")
 
 Options
 =========
 
-If you want to supress the stack trace at the end of the test run you can use the suppressErrorReport option.
+If you want to suppress the stack trace at the end of the test run you can use the suppressErrorReport option.
 
 ```js
 // karma.conf.js
@@ -59,7 +59,7 @@ module.exports = function(config) {
 
       // increase the number of rainbow lines displayed
       // enforced min = 4, enforced max = terminal height - 1
-      numberOfRainbowLines: 100, // default is 4
+      numberOfRainbowLines: 100 // default is 4
     }
   });
 };
@@ -68,4 +68,4 @@ module.exports = function(config) {
 In this release
 -----------
  - Fix for issue #15 - update code to use native Karma error formatter
- - Added error highlighting for relevant error messages in the error report (can be disabled, see Optons section above)
+ - Added error highlighting for relevant error messages in the error report (can be disabled, see Options section above)
