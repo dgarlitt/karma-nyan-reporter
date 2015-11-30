@@ -448,7 +448,7 @@ describe('nyanCat.js test suite', function() {
       sut.browserErrors.push('I\'m an error');
       sut.rainbowifier = rainbowifierInstanceFake;
       sut.onRunComplete();
-      ok(printersFake.printRuntimeErrors.calledWithExactly(rainbowifierInstanceFake.rainbowify));
+      ok(printersFake.printRuntimeErrors.calledWithExactly(rainbowifierInstanceFake.rainbowify, sut.browserErrors));
     });
   });
 
