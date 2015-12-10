@@ -89,6 +89,7 @@ describe('printers.js test suite', function() {
             '\n,' +
             runtimeErrors[1].error + ',' +
             '\n,' +
+            '\n,' +
             '#,\n,' +
             '#,#,\n,' +
             '#,#,#,\n,' +

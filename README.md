@@ -67,5 +67,4 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Fix for issue #15 - update code to use native Karma error formatter
- - Added error highlighting for relevant error messages in the error report (can be disabled, see Optons section above)
+ - Fix for issue #17
