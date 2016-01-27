@@ -143,6 +143,9 @@ describe('nyanCat.js test suite', function() {
       expect(sut).to.contain.keys(defaultPropertyKeys);
       expect(sut.options).to.not.be.an.object;
       expect(sut.options.suppressErrorReport).to.be.false;
+      expect(sut.options.suppressErrorHighlighting).to.be.false;
+      expect(sut.options.numberOfRainbowLines).to.eq(4);
+      expect(sut.options.renderOnRunCompleteOnly).to.be.false;
       expect(sut.adapterMessages).to.be.an.array;
       expect(sut.adapterMessages).to.be.empty;
       expect(sut.adapters).to.be.an.array;
@@ -159,6 +162,7 @@ describe('nyanCat.js test suite', function() {
         'suppressErrorReport' : true,
         'suppressErrorHighlighting' : true,
         'numberOfRainbowLines' : 100,
+        'renderOnRunCompleteOnly' : true,
         'someOtherOption' : 1234
       };
 
@@ -167,6 +171,7 @@ describe('nyanCat.js test suite', function() {
       expect(sut.options.suppressErrorReport).to.be.true;
       expect(sut.options.suppressErrorHighlighting).to.be.true;
       expect(sut.options.numberOfRainbowLines).to.eq(100);
+      expect(sut.options.renderOnRunCompleteOnly).to.be.true;
       expect(sut.options.someOtherOption).to.be.undefined;
     });
 
@@ -397,9 +402,17 @@ describe('nyanCat.js test suite', function() {
       expect(dataStoreInstanceFake.save.calledWithExactly(browser, result)).to.be.true;
     });
 
-    it('should call the draw method', function() {
+    it('should call the draw method with false by default', function() {
       sut.onSpecComplete(browser, result);
       expect(sut.draw.calledOnce).to.be.true;
+      expect(sut.draw.calledWithExactly(false)).to.be.true;
+    });
+
+    it('should call the draw method with true if renderOnRunCompleteOnly is true', function() {
+      sut.options.renderOnRunCompleteOnly = true;
+      sut.onSpecComplete(browser, result);
+      expect(sut.draw.calledOnce).to.be.true;
+      expect(sut.draw.calledWithExactly(true)).to.be.true;
     });
 
   });
@@ -411,6 +424,7 @@ describe('nyanCat.js test suite', function() {
   describe('onRunComplete method tests', function() {
     beforeEach(function(done) {
       sut = new module.NyanCat(null, null, configFake);
+      sut.draw = sinon.spy();
       sut.browserErrors = [];
       sut.drawUtil = drawUtilInstanceFake;
       sut.dataStore = dataStoreInstanceFake;
@@ -419,9 +433,15 @@ describe('nyanCat.js test suite', function() {
       done();
     });
 
+    it('should always call methods in the draw() method', function() {
+      sut.onRunComplete();
+      ok(sut.draw.calledOnce);
+      ok(sut.draw.calledWithExactly());
+    });
+
     it('should always call shellUtilFake.cursor.show()', function() {
       sut.onRunComplete();
-      expect(shellUtilFake.cursor.show.calledOnce).to.be.true;
+      ok(shellUtilFake.cursor.show.calledOnce);
     });
 
     it('should call the expected methods when browserErrors is empty', function() {
@@ -500,11 +520,17 @@ describe('nyanCat.js test suite', function() {
    */
 
   describe('draw method tests', function() {
-    it('should call the correct methods and negate the tick property', function() {
-      sut = new module.NyanCat(null, null, configFake);
-      var util = sut.drawUtil = drawUtilInstanceFake;
+    var util;
 
-      sut.draw();
+    beforeEach(function(done) {
+      sut = new module.NyanCat(null, null, configFake);
+      util = sut.drawUtil = drawUtilInstanceFake;
+      done();
+    });
+
+    it('should call all methods and negate the tick property ' +
+       'when appendOnly is false or absent', function() {
+      sut.draw(false);
       expect(util.appendRainbow.calledOnce).to.be.true;
       expect(util.drawScoreboard.calledOnce).to.be.true;
       expect(util.drawRainbow.calledOnce).to.be.true;
@@ -518,6 +544,16 @@ describe('nyanCat.js test suite', function() {
       expect(util.drawNyanCat.calledTwice).to.be.true;
       expect(util.tick).to.be.true;
     });
+
+    it('should only call appendRainbow() and ' +
+       'update tick when appendOnly is true', function() {
+      sut.draw(true);
+      expect(util.appendRainbow.calledOnce).to.be.true;
+      expect(util.drawScoreboard.calledOnce).to.be.false;
+      expect(util.drawRainbow.calledOnce).to.be.false;
+      expect(util.drawNyanCat.calledOnce).to.be.false;
+      expect(util.tick).to.be.false;
+    })
   });
 
 
