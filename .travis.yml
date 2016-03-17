@@ -1,12 +1,24 @@
 language: node_js
 node_js:
-  - "node"
-  - "0.12"
-  - "0.11"
-  - "0.10"
-  - "iojs"
-  - "iojs-v2.0.0"
-  - "iojs-v1.5.0"
-  - "iojs-v1.0.0"
-script: "npm run test-travis"
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+- node
+- '5'
+- '5.0'
+- '4'
+- '4.0'
+- '0.12'
+- '0.11'
+- '0.10'
+- iojs
+- iojs-v2.0.0
+- iojs-v1.5.0
+- iojs-v1.0.0
+script: npm run test-travis
+after_script: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+deploy:
+  provider: npm
+  email: dgarlitt@yahoo.com
+  api_key:
+    secure: lx8B4eiQND9YJugXSrPEX37dxvhdaQl8WfA9xwJQnoQmvX79N9FcL/PFkSb2XJZg13baQ1hkpNUgnRuvPX/zno5AqKwEGamucxJJWWk+FK0q0x8X4uZWCeLK2dSTja8CqkksIE20dA8bAPTOnXUVF3zHUgc+SC9GLZXhr1agjs4=
+  on:
+    tags: true
+    repo: dgarlitt/karma-nyan-reporter
