@@ -72,4 +72,4 @@ module.exports = function(config) {
 
 In this release
 -----------
- - Fix for issue #16 - Added an option to only render the graphic after all tests have finished running.
+ - Fix for [issue #23](https://github.com/dgarlitt/karma-nyan-reporter/issues/23) - Total tests count is different from other reporters
