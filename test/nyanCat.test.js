@@ -367,12 +367,13 @@ describe('nyanCat.js test suite', function() {
 
     beforeEach(function(done) {
       browser = {
-        'lastResult' : 'last result'
+        'lastResult' : {}
       };
 
       result = {};
 
       sut = new module.NyanCat(null, null, configFake);
+      sut._browsers = [];
       sut.dataStore = dataStoreInstanceFake;
       sut.draw = sinon.spy();
       done();
@@ -384,9 +385,9 @@ describe('nyanCat.js test suite', function() {
       done();
     });
 
-    it('should set sut.stats to the value of browser.lastResult', function() {
+    it('should set sut.stats to inherit from browser.lastResult', function() {
       sut.onSpecComplete(browser, result);
-      expect(sut.stats).to.eq(browser.lastResult);
+      expect(Object.getPrototypeOf(sut.stats)).to.eq(browser.lastResult);
     });
 
     it('should only call save on dataStore when suppressErrorReport is false', function() {
